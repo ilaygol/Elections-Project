@@ -14,7 +14,6 @@ ostream& operator<<(ostream& os,miflaga& mif)
 	cout << "the representives are:" << endl;
 	mif.repList.printList();
 	return os;
-
 }
 
 miflaga::miflaga(string& _name, citizen* head)
