@@ -24,16 +24,12 @@ citizen::citizen(istream& in, Round& _round) : mahozptr(nullptr)
 void citizen::Save(ostream& out) const
 {
 	int nameLen = name.size();
-	const char* tmpName = new char[nameLen];
-	tmpName = name.c_str();
 	int mahozNum = mahozptr->getID();
 	out.write(rcastcc(&nameLen),sizeof(nameLen));
-	out.write(rcastcc(tmpName), nameLen*sizeof(char));
+	out.write(rcastcc(name.c_str()), nameLen*sizeof(char));
 	out.write(rcastcc(&id), sizeof(id));
 	out.write(rcastcc(&yearOfBirth), sizeof(yearOfBirth));
 	out.write(rcastcc(&mahozNum), sizeof(mahozNum));
-
-	delete[] tmpName;
 }
 
 void citizen::Load(istream& in, Round& _round)
@@ -76,7 +72,6 @@ void citizen::Load(istream& in, Round& _round)
 	}
 	mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
 }
-
 
 citizen::~citizen()
 {
