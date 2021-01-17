@@ -135,7 +135,7 @@ public:
 			cout << "Failed to load array lenght" << endl;
 			exit(-1);
 		}
-		arr = new T * [lsize];
+		arr = new T* [lsize];
 		phsize = lsize;
 
 		for (int i = 0; i < lsize; i++)
@@ -145,7 +145,7 @@ public:
 private:
 	void resize(int size)
 	{
-		T** temp = new T * [size];
+		T** temp = new T* [size];
 		for (int i = 0; i < lsize; i++)
 			temp[i] = arr[i];
 		delete[] arr;
