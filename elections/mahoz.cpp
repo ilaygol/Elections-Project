@@ -62,7 +62,7 @@ void mahoz::Save(ostream& out) const
 	int nameLen = name.size();
 	int electionResultsSize = electionResults.size();
 	out.write(rcastcc(&nameLen), sizeof(nameLen));
-	out.write(rcastcc(name.c_str()), nameLen * sizeof(char));
+	out.write(rcastcc(&name[0]), nameLen * sizeof(char));
 	out.write(rcastcc(&numOfRep), sizeof(numOfRep));
 	out.write(rcastcc(&numOfCitizen), sizeof(numOfCitizen));
 	out.write(rcastcc(&numOfVoters), sizeof(numOfVoters));
@@ -73,23 +73,20 @@ void mahoz::Save(ostream& out) const
 void mahoz::Load(istream& in)
 {
 	int nameLen, electionResultsSize;
-	char* tmpName;
 	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
 	{
 		cout << "Failed to load mahoz name len" << endl;
 		exit(-1);
 	}
-	tmpName = new char[nameLen + 1];
-	in.read(rcastc(tmpName), nameLen * sizeof(char));
+	name.clear();
+	name.resize(nameLen + 1);
+	in.read(rcastc(&name[0]), nameLen * sizeof(char));
 	if (!in.good())
 	{
 		cout << "Failed to load mahoz name" << endl;
 		exit(-1);
 	}
-	tmpName[nameLen] = '\0';
-	name = tmpName;
-	delete[] tmpName;
 	name[nameLen] = '\0';
 	in.read(rcastc(&numOfRep), sizeof(numOfRep));
 	if (!in.good())
