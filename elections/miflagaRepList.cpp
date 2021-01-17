@@ -11,11 +11,11 @@ miflagaRepList::miflagaRepList() :head(nullptr),tail(nullptr)
 miflagaRepList::~miflagaRepList()
 {
 	//free all the items in the list
-	while (head != nullptr) {
-		repNode* temp = head;
-		head = head->next;
-		delete temp;
-
+	repNode* temp1 = head, * temp2;
+	while (temp1 != nullptr) {
+		temp2 = temp1->next;
+		delete temp1;
+		temp1 = temp2;
 	}
 }
 
