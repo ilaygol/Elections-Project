@@ -4,9 +4,7 @@
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
-
 int miflaga::serialNumCount = 0;
-
 
 ostream& operator<<(ostream& os,miflaga& mif)
 {
@@ -16,6 +14,7 @@ ostream& operator<<(ostream& os,miflaga& mif)
 	cout << "the representives are:" << endl;
 	mif.repList.printList();
 	return os;
+}
 
 }
 miflaga::miflaga(string& _name, citizen* head)
@@ -29,36 +28,39 @@ miflaga::miflaga(istream& in, Round& _round) : serialNum(serialNumCount + 1),hea
 	Load(in, _round);
 }
 
-
 void miflaga::Save(ostream& out) const
 {
-	int miflagaNameLen, HeadID;
-	miflagaNameLen = name.size();
+	int nameLen, HeadID;
+	nameLen = name.size();
 	HeadID = headOfMiflaga->getID();
-	out.write(rcastcc(&miflagaNameLen), sizeof(miflagaNameLen));
-	out.write(rcastcc(&name[0]), miflagaNameLen * sizeof(char));
+	out.write(rcastcc(&nameLen), sizeof(nameLen));
+	out.write(rcastcc(name.c_str()), nameLen * sizeof(char));
 	out.write(rcastcc(&HeadID), sizeof(HeadID));
 	//saving representives list
 	repList.Save(out);
+}
 
 }
 void miflaga::Load(istream& in, Round& _round)
 {
-	int miflagaNameLen, HeadID;
-	in.read(rcastc(&miflagaNameLen), sizeof(miflagaNameLen));
+	int nameLen, HeadID;
+	char* tmpName;
+	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
 	{
 		cout << "Failed to load mifalga name len" << endl;
 		exit(-1);
 	}
-	name.resize(miflagaNameLen + 1);
-	in.read(rcastc(&name[0]), miflagaNameLen * sizeof(char));
+	tmpName = new char[nameLen + 1];
+	in.read(rcastc(tmpName), nameLen * sizeof(char));
 	if (!in.good())
 	{
-		cout << "Failed to load miflaga name" << endl;
+		cout << "Failed to load citizen name" << endl;
 		exit(-1);
 	}
-	name[miflagaNameLen] = '\0';
+	tmpName[nameLen] = '\0';
+	name = tmpName;
+	delete[] tmpName;
 	in.read(rcastc(&HeadID), sizeof(HeadID));
 	if (!in.good())
 	{
@@ -74,6 +76,3 @@ void miflaga::Load(istream& in, Round& _round)
 miflaga::~miflaga()
 {
 }
-
-
-
