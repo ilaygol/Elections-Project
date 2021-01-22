@@ -67,7 +67,8 @@ void mahoz::Save(ostream& out) const
 	out.write(rcastcc(&numOfCitizen), sizeof(numOfCitizen));
 	out.write(rcastcc(&numOfVoters), sizeof(numOfVoters));
 	out.write(rcastcc(&electionResultsSize), sizeof(int));
-	out.write(rcastcc(&electionResults[0]), electionResultsSize * sizeof(int));
+	if (electionResultsSize != 0)
+		out.write(rcastcc(&electionResults[0]), electionResultsSize * sizeof(int));
 }
 
 void mahoz::Load(istream& in)

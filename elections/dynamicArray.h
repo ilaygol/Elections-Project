@@ -113,6 +113,13 @@ public:
 			arr[i]->Save(out);
 	}
 
+	void SaveMahoz(ostream& out) const
+	{
+		out.write(rcastcc(&lsize), sizeof(lsize));
+		for (int i = 0; i < lsize; i++)
+			mahozLoader::save(arr[i], out);
+	}
+
 	void Load(istream& in, Round& _round)
 	{
 		in.read(rcastc(&lsize), sizeof(lsize));
