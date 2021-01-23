@@ -33,7 +33,19 @@ int main()
 		else
 		{
 			r1 = new Round();
-			LoadElectionsFromFile(*r1, votesBegan,1);
+			try {
+				LoadElectionsFromFile(*r1, votesBegan);
+			}
+			catch (Load_error& msg)
+			{
+				cout << msg.what() << endl;
+				activateMainInterface(r1, votesBegan);
+			}
+			catch (...)
+			{
+				cout << "Problem with the file!" << endl;
+				activateMainInterface(r1, votesBegan);
+			}
 		}
 
 		PrintInterface();

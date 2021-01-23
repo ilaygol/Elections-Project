@@ -124,10 +124,8 @@ public:
 	{
 		in.read(rcastc(&lsize), sizeof(lsize));
 		if (!in.good())
-		{
-			cout << "Failed to load array lenght" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load array lenght");
+		
 		arr = new T * [lsize];
 		phsize = lsize;
 		for (int i = 0; i < lsize; i++)
@@ -138,10 +136,8 @@ public:
 	{
 		in.read(rcastc(&lsize), sizeof(lsize));
 		if (!in.good())
-		{
-			cout << "Failed to load array lenght" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load array lenght");
+		
 		arr = new T* [lsize];
 		phsize = lsize;
 

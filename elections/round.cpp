@@ -32,7 +32,6 @@ bool Round::AddCitizenToArray(string& name, int id, int year, int mahozNum)
 	if (m == nullptr)
 		return false;
 
-	
 	allCitizen.addptr(new citizen(name, id, year, m));
 	return true;
 }
@@ -73,6 +72,7 @@ void Round::InitResults()
 		*itr = 0;
 	}
 }
+
 ///a function that divide the representive of each party  into mahoz
 void Round::setRepList()
 {
@@ -90,7 +90,6 @@ void Round::setRepList()
 				mahozptr->getElectedCit().addptrNoResize(allMiflaga.getObjectPtr(j + 1)->getList().getRepOfMahoz(i + 1).getptr(t));
 			}
 		}
-
 	}
 }
 
@@ -210,7 +209,6 @@ void Round::PrintDevidedResults(dividedMahoz* mahozptr)
 
 void Round::Save(ostream& out) const
 {
-	
 	out.write(rcastcc(&isSimpleRound), sizeof(isSimpleRound));
 	out.write(rcastcc(&day), sizeof(day));
 	out.write(rcastcc(&month), sizeof(month));
@@ -229,28 +227,19 @@ void Round::Load(istream& in)
 {
 	in.read(rcastc(&isSimpleRound), sizeof(isSimpleRound));
 	if (!in.good())
-	{
-		cout << "Failed to load election type" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load election type");
+
 	in.read(rcastc(&day), sizeof(day));
 	if (!in.good())
-	{
-		cout << "Failed to load election date (day)" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load election date (day)");
+
 	in.read(rcastc(&month), sizeof(month));
 	if (!in.good())
-	{
-		cout << "Failed to load election date (month)" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load election date (month)");
+	
 	in.read(rcastc(&year), sizeof(year));
 	if (!in.good())
-	{
-		cout << "Failed to load election date (year)" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load election date (year)");
 
 	allMahoz.LoadMahoz(in);
 	allCitizen.Load(in, *this);

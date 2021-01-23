@@ -60,7 +60,6 @@ void PrintInterface()
 
 void activateMainInterface(Round* _round,bool& electionStart)
 {
-
 	int choice = 0;
 	PrintMainMenu();
 	cin >> choice;
@@ -81,13 +80,11 @@ void activateMainInterface(Round* _round,bool& electionStart)
 		}
 		else
 		{
-			LoadElectionsFromFile(*_round, electionStart, 1);
+			LoadElectionsFromFile(*_round, electionStart);
 		}
 	}
-
-
-
 }
+
 void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 {
 	switch (_choice)
@@ -149,7 +146,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 
 	case 12: //load round
 		try {
-			LoadElectionsFromFile(_round, electionStart, 2);
+			LoadElectionsFromFile(_round, electionStart);
 		}
 		catch (Load_error& msg)
 		{
@@ -198,7 +195,6 @@ void addNewCitizen(Round& _round)
 
 void addNewmahoz(Round& _round)
 {
-
 	int dividedChoice;
 	bool dividedFlag = false;
 	string name;
@@ -234,6 +230,7 @@ void addNewmahoz(Round& _round)
 	else
 		cout << "INVALID MAHOZ TYPE!" << endl;
 }
+
 void addNewMiflaga(Round& _round)
 {
 	string name;
@@ -290,6 +287,7 @@ void addNewRepToMiflaga(Round& _round)
 		}
 	}
 }
+
 void addNewVote(Round& _round, bool& electionStart)
 {
 	int id, miflagaSerial;
@@ -381,18 +379,14 @@ void SaveElectionsToFile(Round& _round, bool electionStart)
 	}
 }
 
-void LoadElectionsFromFile(Round& _round, bool& electionStart,int whoCalled)
+void LoadElectionsFromFile(Round& _round, bool& electionStart)
 {
 	string fileName;
 	cout << "Enter File Name: ";
 	cin >> fileName;
 	ifstream inFile(fileName, ios::binary);
 	if (!inFile)
-	{
-		cout << "Could not Open the FILE" << endl;
-		if (whoCalled == 1)
-			activateMainInterface(&_round,electionStart);
-	}
+		throw Load_error("Couldn't open the file!");
 	else
 	{
 		inFile.read(rcastc(&electionStart), sizeof(electionStart));
