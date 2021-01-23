@@ -20,12 +20,20 @@ int main()
 	{
 		system("cls");
 		if (choice == 1)
-			r1 = SetRound();
+		{
+			try {
+				r1 = SetRound();
+			}
+			catch (const char* msg)
+			{
+				cout << msg << endl;
+				r1 = SetRound();
+			}
+		}
 		else
 		{
 			r1 = new Round();
 			LoadElectionsFromFile(*r1, votesBegan,1);
-
 		}
 
 		PrintInterface();

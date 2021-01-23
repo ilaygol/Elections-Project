@@ -216,7 +216,7 @@ void Round::Save(ostream& out) const
 	out.write(rcastcc(&month), sizeof(month));
 	out.write(rcastcc(&year), sizeof(year));
 
-	allMahoz.Save(out);
+	allMahoz.SaveMahoz(out);
 	allCitizen.Save(out);
 	allMiflaga.Save(out);
 	for (int i = 0; i < allMahoz.getlenght(); i++)

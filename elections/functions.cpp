@@ -12,32 +12,25 @@ void PrintMainMenu()
 
 Round* SetRound()
 {
-	bool stop = false;
 	Round* res;
 	int _day, _month, _year, _isSimpleRound;
-	do 
+	cout << "Please choose the round type: (1) for regular (2) for simple" << endl;
+	cin >> _isSimpleRound;
+	cout << "Please enter the elections date:" << endl;
+	cout << "day: ";
+	cin >> _day;
+	cout << "month: ";
+	cin >> _month;
+	cout << "year: ";
+	cin >> _year;
+	system("cls");
+	if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 2 || _isSimpleRound < 1)
 	{
-		cout << "Please choose the round type: (1) for regular (2) for simple" << endl;
-		cin >> _isSimpleRound;
-		cout << "Please enter the elections date:" << endl;
-		cout << "day: ";
-		cin >> _day;
-		cout << "month: ";
-		cin >> _month;
-		cout << "year: ";
-		cin >> _year;
-		system("cls");
-		if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 2 || _isSimpleRound < 1)
-		{
-			if (_isSimpleRound > 2 || _isSimpleRound < 1)
-				cout << "Round type is invalid,Please try again" << endl;
-			else
-				cout << "Date is invalid,Please try again" << endl;
-		}
+		if (_isSimpleRound > 2 || _isSimpleRound < 1)
+			throw "Round type is invalid,Please try again";
 		else
-			stop = true;
-		
-	} while (!stop);
+			throw "Date is invalid,Please try again";
+	}
 	res = new Round(_day, _month, _year, _isSimpleRound - 1);
 	if (_isSimpleRound - 1)
 	{

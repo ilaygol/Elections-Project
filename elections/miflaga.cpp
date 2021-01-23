@@ -34,7 +34,7 @@ void miflaga::Save(ostream& out) const
 	nameLen = name.size();
 	HeadID = headOfMiflaga->getID();
 	out.write(rcastcc(&nameLen), sizeof(nameLen));
-	out.write(rcastcc(name.c_str()), nameLen * sizeof(char));
+	out.write(rcastcc(&name[0]), nameLen * sizeof(char));
 	out.write(rcastcc(&HeadID), sizeof(HeadID));
 	//saving representives list
 	repList.Save(out);
@@ -44,23 +44,21 @@ void miflaga::Save(ostream& out) const
 void miflaga::Load(istream& in, Round& _round)
 {
 	int nameLen, HeadID;
-	char* tmpName;
 	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
 	{
 		cout << "Failed to load mifalga name len" << endl;
 		exit(-1);
 	}
-	tmpName = new char[nameLen + 1];
-	in.read(rcastc(tmpName), nameLen * sizeof(char));
+	name.clear();
+	name.resize(nameLen + 1);
+	in.read(rcastc(&name[0]), nameLen * sizeof(char));
 	if (!in.good())
 	{
 		cout << "Failed to load citizen name" << endl;
 		exit(-1);
 	}
-	tmpName[nameLen] = '\0';
-	name = tmpName;
-	delete[] tmpName;
+	name[nameLen] = '\0';
 	in.read(rcastc(&HeadID), sizeof(HeadID));
 	if (!in.good())
 	{

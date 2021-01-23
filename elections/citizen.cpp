@@ -26,7 +26,7 @@ void citizen::Save(ostream& out) const
 	int nameLen = name.size();
 	int mahozNum = mahozptr->getID();
 	out.write(rcastcc(&nameLen),sizeof(nameLen));
-	out.write(rcastcc(name.c_str()), nameLen*sizeof(char));
+	out.write(rcastcc(&name[0]), nameLen*sizeof(char));
 	out.write(rcastcc(&id), sizeof(id));
 	out.write(rcastcc(&yearOfBirth), sizeof(yearOfBirth));
 	out.write(rcastcc(&mahozNum), sizeof(mahozNum));
@@ -35,23 +35,21 @@ void citizen::Save(ostream& out) const
 void citizen::Load(istream& in, Round& _round)
 {
 	int nameLen, mahozNum;
-	char* tmpName;
 	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
 	{
 		cout << "Failed to load citizen name len" << endl;
 		exit(-1);
 	}
-	tmpName = new char[nameLen + 1];
-	in.read(rcastc(tmpName), nameLen * sizeof(char));
+	name.clear();
+	name.resize(nameLen + 1);
+	in.read(rcastc(&name[0]), nameLen * sizeof(char));
 	if (!in.good())
 	{
 		cout << "Failed to load citizen name" << endl;
 		exit(-1);
 	}
-	tmpName[nameLen] = '\0';
-	name = tmpName;
-	delete[] tmpName;
+	name[nameLen] = '\0';
 	in.read(rcastc(&id), sizeof(id));
 	if (!in.good())
 	{
