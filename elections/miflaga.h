@@ -20,7 +20,7 @@ public:
 	const citizen* getHeadOfMiflaga() const { return headOfMiflaga; }
 	miflagaRepList& getList()  { return repList; }
 
-	bool setName(string newName) { name = newName; return true; }
+	bool setName(const string newName) { name = newName; return true; }
 	bool setHeadOfMiflaga(const citizen* newHead) { headOfMiflaga = const_cast<citizen*>(newHead); return true; }
 	friend ostream& operator<<(ostream& os, miflaga& mif);
 

@@ -26,7 +26,7 @@ public:
 	DynamicArray<citizen>& getElectedCit() { return electedCit; }
 
 	bool setNumOfCitizen(int citizenNum) { numOfCitizen = citizenNum; }
-	bool setName(string newName) { name = newName; return true; }
+	bool setName(const string newName) { name = newName; return true; }
 	bool setNumOfRep(int newNumOfRep) { numOfRep = newNumOfRep; return true; }
 	bool setVote(int miflagaIndx) { electionResults[miflagaIndx]++; return true; }
 	bool addCitizenNum() { numOfCitizen++; return true; }

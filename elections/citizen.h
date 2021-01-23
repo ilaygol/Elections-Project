@@ -17,7 +17,7 @@ public:
 	const int getYear() const { return yearOfBirth; }
 	const mahoz* getMahoz() const { return mahozptr; }
 
-	bool setName(const char* newName) { name = newName; return true; }
+	bool setName(const string newName) { name = newName; return true; }
 	bool setYear(int newYear) { yearOfBirth = newYear; return true; }
 	bool setMahoz(const mahoz* newMahoz) { mahozptr = const_cast<mahoz*>(newMahoz); return true; }
 	friend ostream& operator<<(ostream& os, const citizen& cit);
