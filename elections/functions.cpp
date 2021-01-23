@@ -148,7 +148,17 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		break;
 
 	case 12: //load round
-		LoadElectionsFromFile(_round, electionStart,2);
+		try {
+			LoadElectionsFromFile(_round, electionStart, 2);
+		}
+		catch (Load_error& msg)
+		{
+			cout << msg.what() << endl;
+		}
+		catch (...)
+		{
+			cout << "Couldn't open the file!" << endl;
+		}
 		break;
 	}
 }

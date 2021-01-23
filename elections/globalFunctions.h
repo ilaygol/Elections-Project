@@ -5,10 +5,6 @@
 #include <math.h>
 #include <fstream>
 #include <vector>
-#include <algorithm>
+#include "Load_error.h"
 
 using namespace std;
-///our own strdup
-char* mystrdup(const char* name);
-//a function that resize the the string;
-char* exactLenName(char* name);

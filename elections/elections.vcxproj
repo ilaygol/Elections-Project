@@ -142,7 +142,6 @@
     <ClCompile Include="citizen.cpp" />
     <ClCompile Include="dividedMahoz.cpp" />
     <ClCompile Include="functions.cpp" />
-    <ClCompile Include="globalFunctions.cpp" />
     <ClCompile Include="mahoz.cpp" />
     <ClCompile Include="MahozLoader.cpp" />
     <ClCompile Include="main.cpp" />
@@ -156,6 +155,7 @@
     <ClInclude Include="dynamicArray.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="globalFunctions.h" />
+    <ClInclude Include="Load_error.h" />
     <ClInclude Include="mahoz.h" />
     <ClInclude Include="MahozLoader.h" />
     <ClInclude Include="miflaga.h" />
