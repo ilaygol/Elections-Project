@@ -130,12 +130,11 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		break;
 
 	case 9: //elections results
-		if (electionStart)
-		{
-			CalculateResults(_round);
-		}
-		else
+		if (!electionStart)
 			throw logic_error("Elections haven't started! nobody has voted yet");
+		if (!_round.CheckEnoughRep())
+			throw logic_error("some miflaga has not enogh representives to some mahoz");
+		CalculateResults(_round);
 		break;
 
 	case 11: //save round

@@ -24,6 +24,8 @@ public:
 	bool setName(const string newName) { name = newName; return true; }
 	bool setHeadOfMiflaga(const citizen* newHead) { headOfMiflaga = const_cast<citizen*>(newHead); return true; }
 	friend ostream& operator<<(ostream& os, miflaga& mif);
+	//this function checks if this miflaga has enough rep for the input mahoz
+	bool CheckMahozRep(int numOfRep, int mahozSerial);
 
 	//working with files functions
 	void Save(ostream& out) const;

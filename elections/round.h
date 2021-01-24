@@ -37,6 +37,8 @@ public:
 	void PrintResults();
 	void PrintDevidedResults(dividedMahoz* mahozptr);
 	int CalculateVotesForHead(int miflagaIndex);
+	//this function checks if every miflaga has enough rep for each mahoz
+	bool CheckEnoughRep();
 
 	void Save(ostream& out) const;
 	void Load(istream& in);

@@ -110,7 +110,6 @@ DynamicArray<citizen>& miflagaRepList::getRepOfMahoz(int mahozSerial)
 	return search->rep;
 }
 
-
 int miflagaRepList::countListLengh() const
 {
 	repNode* countNode = head;
@@ -123,6 +122,23 @@ int miflagaRepList::countListLengh() const
 	return count;
 }
 
+bool miflagaRepList::IsExactNumOfRep(int mahozSerial, int numOfRep)
+{
+	repNode* search = head;
+	bool found = false;
+	while (search != nullptr && !found)
+	{
+		if (search->mahozID == mahozSerial)
+		{
+			found = true;
+			if (search->numOfRep == numOfRep)
+				return true;
+		}
+		else
+			search = search->next;
+	}
+	return false;
+}
 
 void miflagaRepList::Save(ostream& out) const
 {
@@ -142,9 +158,9 @@ void miflagaRepList::Save(ostream& out) const
 			out.write(rcastcc(&citizenID), sizeof(citizenID));
 		}
 		savingNode = savingNode->next;
-	}
-	
+	}	
 }
+
 void miflagaRepList::Load(istream& in, Round& _round)
 {
 	int listLenght;
@@ -176,7 +192,6 @@ void miflagaRepList::Load(istream& in, Round& _round)
 		}
 	}
 }
-
 
 void miflagaRepList::printList() const
 {

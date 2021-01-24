@@ -5,6 +5,7 @@
 #include <math.h>
 #include <fstream>
 #include <vector>
+#include <string>
 #include "Load_error.h"
 
 using namespace std;

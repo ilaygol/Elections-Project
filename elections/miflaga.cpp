@@ -27,6 +27,11 @@ miflaga::miflaga(istream& in, Round& _round) : serialNum(serialNumCount + 1),hea
 	Load(in, _round);
 }
 
+bool miflaga::CheckMahozRep(int numOfRep, int mahozSerial)
+{
+	return repList.IsExactNumOfRep(mahozSerial, numOfRep);
+}
+
 void miflaga::Save(ostream& out) const
 {
 	int nameLen, HeadID;

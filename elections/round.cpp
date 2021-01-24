@@ -226,6 +226,29 @@ void Round::PrintDevidedResults(dividedMahoz* mahozptr)
 	delete[] tempArr;
 }
 
+bool Round::CheckEnoughRep()
+{
+	int currNumOfRep, numOfMahoz, numOfMiflaga;
+	mahoz* mahozptr;
+	miflaga* miflagaptr;
+	string errormsg;
+	numOfMahoz = allMahoz.getlenght();
+	numOfMiflaga = allMiflaga.getlenght();
+
+	for (int i = 0; i < numOfMahoz; i++)
+	{
+		mahozptr = allMahoz.getptr(i);
+		currNumOfRep = mahozptr->getNumOfRep();
+		for (int j = 0; j < numOfMiflaga; j++)
+		{
+			miflagaptr = allMiflaga.getptr(j);
+			if (!miflagaptr->CheckMahozRep(currNumOfRep, i + 1))
+				return false;
+		}
+	}
+	return true;
+}
+
 void Round::Save(ostream& out) const
 {
 	out.write(rcastcc(&isSimpleRound), sizeof(isSimpleRound));
