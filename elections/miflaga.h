@@ -10,6 +10,7 @@ public:
 	miflaga() = default;
 	miflaga(string& _name, citizen* head);
 	miflaga(istream& in,Round&_round);
+	miflaga(const miflaga& other) = delete;
 	~miflaga();
 
 	const int getSerialNumCount() const { return serialNumCount; }

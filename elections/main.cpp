@@ -53,8 +53,8 @@ int main()
 					cout << "Problem with the file!" << endl;
 				}
 			}
+			system("cls");
 		}
-
 		PrintInterface();
 		cin >> choice;
 		while (choice != 10)

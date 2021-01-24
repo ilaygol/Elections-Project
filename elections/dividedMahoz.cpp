@@ -12,6 +12,13 @@ dividedMahoz::~dividedMahoz()
 {
 }
 
+
+void dividedMahoz::print(ostream& os) const
+{
+	os << "serial number:" << this->serialNum << " Name:" << this->name << " Number of representatives:" << this->numOfRep;
+	cout << " The mahoz is Divided";
+}
+
 int* dividedMahoz::getDividedRep()
 {
 	float temp;

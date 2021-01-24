@@ -10,6 +10,7 @@ public:
 	mahoz() = default;
 	mahoz(string& _name, int _numOfRep);
 	mahoz(istream& in);
+	mahoz(const mahoz& other) = delete;
 	virtual ~mahoz();
 
 	const int getSerialNumCount() const { return serialNumCount; }
@@ -32,6 +33,7 @@ public:
 	bool addCitizenNum() { numOfCitizen++; return true; }
 	bool addVotersNum() { numOfVoters++; return true; }
 	friend ostream& operator<<(ostream& os, const mahoz& mahozToPrint);
+	virtual void print(ostream& os) const;
 	void initElectionResults(int numOfMiflaga);
 	int getWinnerRep(int& miflagaWinnerIndx);
 	int getWinnerIndx();

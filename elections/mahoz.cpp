@@ -1,4 +1,5 @@
 #include "mahoz.h"
+
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
@@ -6,12 +7,14 @@ int mahoz::serialNumCount = 0;
 
 ostream& operator<<(ostream& os,const mahoz& mahozToPrint)
 {
-	os << "serial number:" << mahozToPrint.serialNum << " Name:" << mahozToPrint.name << " Number of representatives:" << mahozToPrint.numOfRep;
-	if (typeid(mahozToPrint) == typeid(mahoz))
-		cout << " The mahoz is Standard";
-	else
-		cout << " The mahoz is Divided";
+	mahozToPrint.print(os);
 	return os;
+}
+
+void mahoz::print(ostream& os) const
+{
+	os << "serial number:" << this->serialNum << " Name:" << this->name << " Number of representatives:" << this->numOfRep;
+	cout << " The mahoz is Standard";
 }
 
 mahoz::mahoz(string& _name, int _numOfRep)
