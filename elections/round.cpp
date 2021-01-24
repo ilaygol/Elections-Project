@@ -9,13 +9,21 @@
 
 Round::Round(int _day, int _month, int _year, bool _isSimpleRound)
 {
-	if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 1 || _isSimpleRound < 0)
-	{
-		if (_isSimpleRound > 1 || _isSimpleRound < 0)
-			throw invalid_argument("Round type is invalid, please try again");
-		else
-			throw invalid_argument("Date is invalid, please try again");
-	}
+	if (_isSimpleRound > 1 || _isSimpleRound < 0)
+		throw invalid_argument("Round type is invalid, please try again");
+	if (_year < 0)
+		throw invalid_argument("Year is invalid, please try again");
+	if (_month < 1 || _month > 12)
+		throw invalid_argument("Month should be 1-12, please try again");
+	//february
+	if (_month == 2 && (_day > 28 || _day < 1))
+		throw invalid_argument("Day in February should be 1-28, please try again");
+	//30 days months
+	if ((_month == 4 || _month == 6 || _month == 9 || _month == 11) && (_day > 30 || _day < 1))
+		throw invalid_argument("Day in this month should be 1-30, please try again");
+	//31 days months
+	if (_day > 31 || _day < 1)
+		throw invalid_argument("Day in this month should be 1-31, please try again");
 	day = _day;
 	month = _month;
 	year = _year;

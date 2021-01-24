@@ -269,7 +269,6 @@ void addNewRepToMiflaga(Round& _round)
 			}
 			else
 				throw invalid_argument("COULD NOT ADD representive, MAHOZ DOES NOT EXIST");
-
 		}
 	}
 }

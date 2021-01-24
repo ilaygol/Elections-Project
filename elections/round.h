@@ -38,7 +38,6 @@ public:
 	void PrintDevidedResults(dividedMahoz* mahozptr);
 	int CalculateVotesForHead(int miflagaIndex);
 
-
 	void Save(ostream& out) const;
 	void Load(istream& in);
 
