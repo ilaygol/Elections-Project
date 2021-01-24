@@ -7,8 +7,19 @@
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
-Round::Round(int _day, int _month, int _year, bool _isSimpleRound) :day(_day), month(_month), year(_year), isSimpleRound(_isSimpleRound)
+Round::Round(int _day, int _month, int _year, bool _isSimpleRound)
 {
+	if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 1 || _isSimpleRound < 0)
+	{
+		if (_isSimpleRound > 1 || _isSimpleRound < 0)
+			throw invalid_argument("Round type is invalid, please try again");
+		else
+			throw invalid_argument("Date is invalid, please try again");
+	}
+	day = _day;
+	month = _month;
+	year = _year;
+	isSimpleRound = _isSimpleRound;
 }
 
 Round::~Round()

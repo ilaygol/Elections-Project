@@ -18,8 +18,11 @@ void mahoz::print(ostream& os) const
 }
 
 mahoz::mahoz(string& _name, int _numOfRep)
-	: name(_name), numOfRep(_numOfRep), serialNum(serialNumCount + 1), numOfCitizen(0), numOfVoters(0)
+	: name(_name), serialNum(serialNumCount + 1), numOfCitizen(0), numOfVoters(0)
 {
+	if (_numOfRep <= 0)
+		throw invalid_argument("INVALID REPRESENTIVES NUMBER!");
+	numOfRep = _numOfRep;
 	serialNumCount++;
 	electedCit.setlenght(_numOfRep);
 }

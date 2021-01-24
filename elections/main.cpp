@@ -74,6 +74,10 @@ int main()
 				{
 					cout << msg.what() << endl;
 				}
+				catch (logic_error& msg)
+				{
+					cout << msg.what() << endl;
+				}
 				catch (...)
 				{
 					cout << "Unknown error!" << endl;

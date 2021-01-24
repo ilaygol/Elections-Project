@@ -11,8 +11,18 @@ ostream& operator<<(ostream& os, const citizen& cit)
 }
 
 citizen::citizen(string& _name, int _id, int _yearOfBirth, const mahoz* mahozSerial)
-	:id(_id), name(_name), yearOfBirth(_yearOfBirth), mahozptr(const_cast<mahoz*>(mahozSerial))
+	:name(_name)
 {
+	if (mahozSerial == nullptr)
+		throw logic_error("could not add the citizen, MAHOZ DOESNT EXIST");
+	if (!checkID(_id))
+		throw invalid_argument("could not add the citizen, ID is incorrect!");
+	if (_yearOfBirth < 1900 || _yearOfBirth>2050)
+		throw invalid_argument("could not add the citizen, YEAR is incorrect!");
+
+	id = _id;
+	yearOfBirth = _yearOfBirth;
+	mahozptr = const_cast<mahoz*>(mahozSerial);
 }
 
 citizen::citizen(istream& in, Round& _round) : mahozptr(nullptr)
@@ -20,6 +30,18 @@ citizen::citizen(istream& in, Round& _round) : mahozptr(nullptr)
 	Load(in,_round);
 }
 
+bool citizen::checkID(int id)
+{
+	int count = 0;
+	while (id > 0)
+	{
+		count++;
+		id /= 10;
+	}
+	if (count == 9)
+		return true;
+	return false;
+}
 
 void citizen::Save(ostream& out) const
 {

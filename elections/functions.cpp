@@ -24,13 +24,6 @@ Round* SetRound()
 	cout << "year: ";
 	cin >> _year;
 	system("cls");
-	if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 2 || _isSimpleRound < 1)
-	{
-		if (_isSimpleRound > 2 || _isSimpleRound < 1)
-			throw invalid_argument("Round type is invalid, please try again");
-		else
-			throw invalid_argument("Date is invalid, please try again");
-	}
 	res = new Round(_day, _month, _year, _isSimpleRound - 1);
 	if (_isSimpleRound - 1)
 	{
@@ -130,14 +123,19 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		int numOfMiflaga, numOfMahoz;
 		numOfMiflaga = _round.getAllMiflaga().getlenght();
 		numOfMahoz = _round.getAllMahoz().getlenght();
-		if (numOfMahoz == 0 || numOfMiflaga==0)
-			cout << "NO DETAILS ENTERED YET,CANT START votes!!" << endl;
+		if (numOfMahoz == 0 || numOfMiflaga == 0)
+			throw logic_error("NO DETAILS ENTERED YET,CANT START votes!!");
 		else
 			addNewVote(_round, electionStart);
 		break;
 
 	case 9: //elections results
-		CalculateResults(_round);
+		if (electionStart)
+		{
+			CalculateResults(_round);
+		}
+		else
+			throw logic_error("Elections haven't started! nobody has voted yet");
 		break;
 
 	case 11: //save round
@@ -168,19 +166,22 @@ void addNewCitizen(Round& _round)
 		mahozNum = 1;
 	mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
 	cit = _round.getAllCitizen().getObjectPtr(id);
-	if (cit == nullptr && mahozptr != nullptr) ///citizen already exist
+	if (cit == nullptr) ///citizen already exist
 	{
 		_round.AddCitizenToArray(name, id, year, mahozNum);//added the citizen the all citizens array
 
-		//adding the citizen to citizens that can vote in specific mahoz
-		mahozptr->getCanVoteCit().addptr(new citizen(name, id, year, mahozptr));
-		mahozptr->addCitizenNum();
-		cout << "Citizen been added SUCCESSFULLY" << endl;
+		//adding the citizen to citizens that can vote in specific mahoz if age above 18
+		if (_round.getYear() - year >= 18)
+		{
+			mahozptr->getCanVoteCit().addptr(new citizen(name, id, year, mahozptr));
+			mahozptr->addCitizenNum();
+			cout << "Citizen has been added SUCCESSFULLY and can vote! (above 18)" << endl;
+		}
+		else
+			cout << "Citizen has been added SUCCESSFULLY and can not vote! (under 18)" << endl;
 	}
-	else if (mahozptr != nullptr)
-		throw invalid_argument("could not add the citizen,ALREADY EXIST");
 	else
-		throw invalid_argument("could not add the citizen,MAHOZ DOESNT EXIST");
+		throw logic_error("could not add the citizen, ALREADY EXIST");
 }
 
 void addNewmahoz(Round& _round)
@@ -209,13 +210,8 @@ void addNewmahoz(Round& _round)
 
 	if (dividedChoice == 1 || dividedChoice == 2)
 	{
-		if (numOfRep <= 0)
-			throw invalid_argument("INVALID REPRESENTIVES NUMBER!");
-		else
-		{
-			_round.AddMahozToArray(name, numOfRep,dividedFlag);
-			cout << "mahoz been added SUCCESSFULY" << endl;
-		}
+		_round.AddMahozToArray(name, numOfRep, dividedFlag);
+		cout << "mahoz been added SUCCESSFULY" << endl;
 	}
 	else
 		throw invalid_argument("INVALID MAHOZ TYPE!");
@@ -238,7 +234,7 @@ void addNewMiflaga(Round& _round)
 		cout << "Miflaga been added SUCCESSFULY" << endl;
 	}
 	else
-		throw invalid_argument("COULD NOT add miflaga, WRONG ID");
+		throw logic_error("COULD NOT add miflaga, There is no citizen with this exact ID");
 }
 
 void addNewRepToMiflaga(Round& _round)
@@ -257,22 +253,22 @@ void addNewRepToMiflaga(Round& _round)
 		mahozNum = 1;
 	cit = _round.getAllCitizen().getObjectPtr(id);
 	if (cit == nullptr)
-		throw invalid_argument("Could not add citizen,CITIZEN DOES NOT EXIST");
+		throw invalid_argument("Could not add citizen, CITIZEN DOES NOT EXIST");
 	else
 	{
 		mif = _round.getAllMiflaga().getObjectPtr(miflagaSerial);
 		if (mif == nullptr)
-			throw invalid_argument("Could not add citizen,MIFLAGA DOES NOT EXIST");
+			throw invalid_argument("Could not add citizen, MIFLAGA DOES NOT EXIST");
 		else
 		{
 			mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
 			if (mahozptr != nullptr)
 			{
 				mif->getList().addRepToMahoz(cit, mahozNum);
-				cout << "representative been added SUCCESSFULY" << endl;
+				cout << "representive been added SUCCESSFULY" << endl;
 			}
 			else
-				throw invalid_argument("COULD NOT ADD representative,MAHOZ DOES NOT EXIST");
+				throw invalid_argument("COULD NOT ADD representive, MAHOZ DOES NOT EXIST");
 
 		}
 	}
