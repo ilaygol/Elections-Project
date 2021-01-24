@@ -30,6 +30,7 @@ public:
 	bool setName(const string newName) { name = newName; return true; }
 	bool setNumOfRep(int newNumOfRep) { numOfRep = newNumOfRep; return true; }
 	bool setVote(int miflagaIndx) { electionResults[miflagaIndx]++; return true; }
+	void addMiflagaToResultsArr() { electionResults.push_back(0); }
 	bool addCitizenNum() { numOfCitizen++; return true; }
 	bool addVotersNum() { numOfVoters++; return true; }
 	friend ostream& operator<<(ostream& os, const mahoz& mahozToPrint);

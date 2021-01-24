@@ -20,9 +20,9 @@ void activateMainInterface(Round* _round, bool& electionStart);
 //a function that add a new citizen
 void addNewCitizen(Round& _round);
 //a function that add a new mahoz
-void addNewmahoz(Round& _round);
+void addNewmahoz(Round& _round, bool electionStart);
 //a function that add a new miflaga
-void addNewMiflaga(Round& _round);
+void addNewMiflaga(Round& _round, bool electionStart);
 //a function that add a new rep to mifalga
 void addNewRepToMiflaga(Round& _round);
 //a function that add a new vote to votes schedule in round class

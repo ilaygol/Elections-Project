@@ -27,7 +27,7 @@ Round* SetRound()
 	res = new Round(_day, _month, _year, _isSimpleRound - 1);
 	if (_isSimpleRound - 1)
 	{
-		addNewmahoz(*res);
+		addNewmahoz(*res, false);
 	}
 
 	system("cls");
@@ -83,12 +83,10 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 	switch (_choice)
 	{
 	case 1: //add mahoz
-		if (electionStart)
-			cout << "Elections already started, CAN'T ADD MAHOZ" << endl;
-		else if (_round.getIsSimpleRound())
-			cout << "These are simple elections, CAN'T ADD MAHOZ" << endl;
+		if (_round.getIsSimpleRound())
+			throw logic_error("These are simple elections, CAN'T ADD MAHOZ");
 		else
-			addNewmahoz(_round);
+			addNewmahoz(_round, electionStart);
 		break;
 
 	case 2: //add citizen
@@ -96,11 +94,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		break;
 
 	case 3: //add miflaga
-		if (electionStart)
-			cout << "Elections already started,CANT ADD MIFLAGA" << endl;
-		else
-			addNewMiflaga(_round);
-
+		addNewMiflaga(_round, electionStart);
 		break;
 
 	case 4: //add citizen to miflaga
@@ -183,7 +177,7 @@ void addNewCitizen(Round& _round)
 		throw logic_error("could not add the citizen, ALREADY EXIST");
 }
 
-void addNewmahoz(Round& _round)
+void addNewmahoz(Round& _round, bool electionStart)
 {
 	int dividedChoice;
 	bool dividedFlag = false;
@@ -210,13 +204,19 @@ void addNewmahoz(Round& _round)
 	if (dividedChoice == 1 || dividedChoice == 2)
 	{
 		_round.AddMahozToArray(name, numOfRep, dividedFlag);
+		if (electionStart)
+		{
+			int mahozSerial = _round.getAllMahoz().getlenght();
+			int numOfMiflaga = _round.getAllMiflaga().getlenght();
+			_round.getAllMahoz().getObjectPtr(mahozSerial)->initElectionResults(numOfMiflaga);
+		}
 		cout << "mahoz been added SUCCESSFULY" << endl;
 	}
 	else
 		throw invalid_argument("INVALID MAHOZ TYPE!");
 }
 
-void addNewMiflaga(Round& _round)
+void addNewMiflaga(Round& _round, bool electionStart)
 {
 	string name;
 	mahoz* mahozptr;
@@ -230,6 +230,15 @@ void addNewMiflaga(Round& _round)
 	if (cit != nullptr) ///head of miflaga exist
 	{
 		_round.AddMiflagaToArray(name, id);
+		if (electionStart)
+		{
+			int numOfMahoz = _round.getAllMahoz().getlenght();
+			for (int i = 0; i < numOfMahoz; i++)
+			{
+				mahozptr = _round.getAllMahoz().getObjectPtr(i + 1);
+				mahozptr->addMiflagaToResultsArr();
+			}
+		}
 		cout << "Miflaga been added SUCCESSFULY" << endl;
 	}
 	else
