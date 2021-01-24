@@ -28,6 +28,11 @@ miflaga::miflaga(istream& in, Round& _round) : serialNum(serialNumCount + 1),hea
 	Load(in, _round);
 }
 
+bool miflaga::CheckMahozRep(int numOfRep, int mahozSerial)
+{
+	return repList.IsExactNumOfRep(mahozSerial, numOfRep);
+}
+
 void miflaga::Save(ostream& out) const
 {
 	int nameLen, HeadID;
@@ -46,25 +51,19 @@ void miflaga::Load(istream& in, Round& _round)
 	int nameLen, HeadID;
 	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
-	{
-		cout << "Failed to load mifalga name len" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load mifalga name len");
+	
 	name.clear();
 	name.resize(nameLen + 1);
 	in.read(rcastc(&name[0]), nameLen * sizeof(char));
 	if (!in.good())
-	{
-		cout << "Failed to load citizen name" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load citizen name");
 	name[nameLen] = '\0';
+
 	in.read(rcastc(&HeadID), sizeof(HeadID));
 	if (!in.good())
-	{
-		cout << "Failed to load miflaga head ID" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load miflaga head ID");
+
 	headOfMiflaga = _round.getAllCitizen().getObjectPtr(HeadID);
 	serialNumCount++;
 	//loading represetives list

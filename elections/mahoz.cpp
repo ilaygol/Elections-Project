@@ -1,4 +1,5 @@
 #include "mahoz.h"
+
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
@@ -6,17 +7,22 @@ int mahoz::serialNumCount = 0;
 
 ostream& operator<<(ostream& os,const mahoz& mahozToPrint)
 {
-	os << "serial number:" << mahozToPrint.serialNum << " Name:" << mahozToPrint.name << " Number of representatives:" << mahozToPrint.numOfRep;
-	if (typeid(mahozToPrint) == typeid(mahoz))
-		cout << " The mahoz is Standard";
-	else
-		cout << " The mahoz is Divided";
+	mahozToPrint.print(os);
 	return os;
 }
 
-mahoz::mahoz(string& _name, int _numOfRep)
-	: name(_name), numOfRep(_numOfRep), serialNum(serialNumCount + 1), numOfCitizen(0), numOfVoters(0)
+void mahoz::print(ostream& os) const
 {
+	os << "serial number:" << this->serialNum << " Name:" << this->name << " Number of representatives:" << this->numOfRep;
+	cout << " The mahoz is Standard";
+}
+
+mahoz::mahoz(string& _name, int _numOfRep)
+	: name(_name), serialNum(serialNumCount + 1), numOfCitizen(0), numOfVoters(0)
+{
+	if (_numOfRep <= 0)
+		throw invalid_argument("INVALID REPRESENTIVES NUMBER!");
+	numOfRep = _numOfRep;
 	serialNumCount++;
 	electedCit.setlenght(_numOfRep);
 }
@@ -76,53 +82,37 @@ void mahoz::Load(istream& in)
 	int nameLen, electionResultsSize;
 	in.read(rcastc(&nameLen), sizeof(nameLen));
 	if (!in.good())
-	{
-		cout << "Failed to load mahoz name len" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load mahoz name len");
+	
 	name.clear();
 	name.resize(nameLen + 1);
 	in.read(rcastc(&name[0]), nameLen * sizeof(char));
 	if (!in.good())
-	{
-		cout << "Failed to load mahoz name" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load mahoz name");
 	name[nameLen] = '\0';
+
 	in.read(rcastc(&numOfRep), sizeof(numOfRep));
 	if (!in.good())
-	{
-		cout << "Failed to load number of representive in mahoz" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load number of representive in mahoz");
+	
 	in.read(rcastc(&numOfCitizen), sizeof(numOfRep));
 	if (!in.good())
-	{
-		cout << "Failed to load number of citizens in mahoz" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load number of citizens in mahoz");
+
 	in.read(rcastc(&numOfVoters), sizeof(numOfVoters));
 	if (!in.good())
-	{
-		cout << "Failed to load number of voters in mahoz" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load number of voters in mahoz");
+
 	in.read(rcastc(&electionResultsSize), sizeof(electionResultsSize));
 	if (!in.good())
-	{
-		cout << "Failed to load elections results SIZE" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load elections results SIZE");
 
 	if (electionResultsSize > 0)
 	{
 		electionResults.resize(electionResultsSize);
 		in.read(rcastc(&electionResults[0]), electionResultsSize * sizeof(int));
 		if (!in.good())
-		{
-			cout << "Failed to load elections results Array" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load elections results Array");
 	}
 	serialNumCount++;
 	//will load num of rep at load function

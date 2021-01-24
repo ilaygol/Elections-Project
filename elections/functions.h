@@ -32,4 +32,4 @@ void CalculateResults(Round& _round);
 //saves the round elections to file
 void SaveElectionsToFile(Round& _round, bool electionStart);
 //load the round elections from file
-void LoadElectionsFromFile(Round& _round, bool& electionStart,int whoCalled);
+bool LoadElectionsFromFile(Round& _round, bool& electionStart);

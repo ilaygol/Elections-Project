@@ -110,7 +110,6 @@ DynamicArray<citizen>& miflagaRepList::getRepOfMahoz(int mahozSerial)
 	return search->rep;
 }
 
-
 int miflagaRepList::countListLengh() const
 {
 	repNode* countNode = head;
@@ -123,6 +122,23 @@ int miflagaRepList::countListLengh() const
 	return count;
 }
 
+bool miflagaRepList::IsExactNumOfRep(int mahozSerial, int numOfRep)
+{
+	repNode* search = head;
+	bool found = false;
+	while (search != nullptr && !found)
+	{
+		if (search->mahozID == mahozSerial)
+		{
+			found = true;
+			if (search->numOfRep == numOfRep)
+				return true;
+		}
+		else
+			search = search->next;
+	}
+	return false;
+}
 
 void miflagaRepList::Save(ostream& out) const
 {
@@ -142,33 +158,26 @@ void miflagaRepList::Save(ostream& out) const
 			out.write(rcastcc(&citizenID), sizeof(citizenID));
 		}
 		savingNode = savingNode->next;
-	}
-	
+	}	
 }
+
 void miflagaRepList::Load(istream& in, Round& _round)
 {
 	int listLenght;
 	in.read(rcastc(&listLenght), sizeof(listLenght));
 	if (!in.good())
-	{
-		cout << "Failed to load mifalga Representives List" << endl;
-		exit(-1);
-	}
+		throw Load_error("Failed to load mifalga Representives List");
+
 	for (int i = 0; i < listLenght; i++)
 	{
 		int mahozNum, numOfRep;
 		in.read(rcastc(&mahozNum), sizeof(mahozNum));
 		if (!in.good())
-		{
-			cout << "Failed to load mahoz number for miflaga representives list" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load mahoz number for miflaga representives list");
+			
 		in.read(rcastc(&numOfRep), sizeof(numOfRep));
 		if (!in.good())
-		{
-			cout << "Failed to load numbers of representives for miflaga in mahoz "<<mahozNum << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load numbers of representives for miflaga in mahoz");
 
 		for (int j = 0; j < numOfRep; j++)
 		{
@@ -176,16 +185,13 @@ void miflagaRepList::Load(istream& in, Round& _round)
 			citizen* citizenPtr;
 			in.read(rcastc(&citizenID), sizeof(citizenID));
 			if (!in.good())
-			{
-				cout << "Failed to load representive ID" << endl;
-				exit(-1);
-			}
+				throw Load_error("Failed to load representive ID");
+				
 			citizenPtr= _round.getAllCitizen().getObjectPtr(citizenID);
 			addRepToMahoz(citizenPtr, mahozNum);
 		}
 	}
 }
-
 
 void miflagaRepList::printList() const
 {

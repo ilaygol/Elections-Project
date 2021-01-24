@@ -35,6 +35,9 @@ public:
 	
 	//getter
 	DynamicArray<citizen>& getRepOfMahoz(int mahozSerial);
+
+	//this function checks if the input mahoz has the exact amount of rep it the list.
+	bool IsExactNumOfRep(int mahozSerial, int numOfRep);
 	//printing function
 	void printList() const;
 };

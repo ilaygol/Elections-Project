@@ -23,6 +23,8 @@ mahoz* mahozLoader::load(istream& in)
 {
 	MahozType type;
 	in.read(rcastc(&type), sizeof(type));
+	if (!in.good())
+		throw Load_error("Failed to load mahoz type");
 	switch (type)
 	{
 	case MahozType::mahoz:

@@ -10,6 +10,7 @@ public:
 	miflaga() = default;
 	miflaga(string& _name, citizen* head);
 	miflaga(istream& in,Round&_round);
+	miflaga(const miflaga& other) = delete;
 	~miflaga();
 
 	const int getSerialNumCount() const { return serialNumCount; }
@@ -20,9 +21,11 @@ public:
 	const citizen* getHeadOfMiflaga() const { return headOfMiflaga; }
 	miflagaRepList& getList()  { return repList; }
 
-	bool setName(char* newName) { name = mystrdup(newName); return true; }
+	bool setName(const string newName) { name = newName; return true; }
 	bool setHeadOfMiflaga(const citizen* newHead) { headOfMiflaga = const_cast<citizen*>(newHead); return true; }
 	friend ostream& operator<<(ostream& os, miflaga& mif);
+	//this function checks if this miflaga has enough rep for the input mahoz
+	bool CheckMahozRep(int numOfRep, int mahozSerial);
 
 	//working with files functions
 	void Save(ostream& out) const;

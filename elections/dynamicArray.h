@@ -124,10 +124,8 @@ public:
 	{
 		in.read(rcastc(&lsize), sizeof(lsize));
 		if (!in.good())
-		{
-			cout << "Failed to load array lenght" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load array lenght");
+		
 		arr = new T * [lsize];
 		phsize = lsize;
 		for (int i = 0; i < lsize; i++)
@@ -138,10 +136,8 @@ public:
 	{
 		in.read(rcastc(&lsize), sizeof(lsize));
 		if (!in.good())
-		{
-			cout << "Failed to load array lenght" << endl;
-			exit(-1);
-		}
+			throw Load_error("Failed to load array lenght");
+		
 		arr = new T* [lsize];
 		phsize = lsize;
 
@@ -149,7 +145,114 @@ public:
 			arr[i] = mahozLoader::load(in);
 	}
 
+	template <bool is_const>
+	class base_iterator
+	{
+	public:
+		using ds_type = std::conditional_t<is_const, const DynamicArray, DynamicArray>;
+
+		using iterator_category = std::bidirectional_iterator_tag;
+		// other options exist, e.g., std::forward_iterator_tag
+		using different_type = std::ptrdiff_t;
+		using value_type = std::conditional_t<is_const, const T, T>;
+		using pointer = value_type*;
+		using reference = value_type&;
+
+		base_iterator(ds_type& arr, int i) : _da(&arr), _i(i) {}
+
+		// we want to use the default copy constructor
+		base_iterator(const base_iterator&) = default;
+
+		// and the default assignment operator
+		constexpr base_iterator& operator=(const base_iterator&) = default;
+
+		// we want to allow construction of const_iterator from iterator
+		friend class base_iterator<true>;
+		template <bool _is_const = is_const, class = std::enable_if_t<_is_const>>
+		base_iterator(const base_iterator<false>& other) : _da(other._da), _i(other._i) {}
+
+		// comparison with another iterator
+		bool operator==(const base_iterator& other) const {
+			return (_da == other._da) && (_i == other._i);
+		}
+		bool operator!=(const base_iterator& other) const {
+			return !(*this == other);
+		}
+
+		// smart-pointer iterator methods
+		reference operator*() {
+			return _da->_arr[_i];
+		}
+		pointer operator->() {
+			return &_da->_arr[_i];
+		}
+
+		// increment-decrement iterator methods
+		base_iterator& operator++() {
+			++_i;
+			return *this;
+		}
+		base_iterator operator++(int) {
+			base_iterator temp(*this);
+			++_i;
+			return temp;
+		}
+		base_iterator& operator--() {
+			--_i;
+			return *this;
+		}
+		base_iterator operator--(int) {
+			base_iterator temp(*this);
+			--_i;
+			return temp;
+		}
+	private:
+		ds_type* _da;
+		int			_i;
+	};
+
+	using iterator = base_iterator<false>;
+	using const_iterator = base_iterator<true>;
+
+	// should return iterator to new element
+	void insert(const iterator& pos, const T& val) {
+		if (lsize == phsize)
+			resize();
+
+		iterator itrEnd = end();
+		iterator itrCurrent = itrEnd, itrPrev = --itrEnd;
+		while (itrCurrent != pos)
+		{
+			*itrCurrent = *itrPrev;
+			itrCurrent = itrPrev--;
+		}
+
+		iterator p = pos;
+		*p = val;
+		++lsize;
+	}
+
+	// returns iterator to first element after deleted element/s
+	iterator erase(const iterator& iter);
+	iterator erase(const iterator& first, const iterator& last);
+
+	iterator begin() {
+		return iterator(*this, 0);
+	}
+	iterator end() {
+		return iterator(*this, lsize);
+	}
+	const_iterator begin() const {
+		return const_iterator(*this, 0);
+	}
+	const_iterator end() const {
+		return const_iterator(*this, lsize);
+	}
+
 private:
+	T** arr;
+	int phsize;
+	int lsize;
 	void resize(int size)
 	{
 		T** temp = new T* [size];
@@ -159,9 +262,4 @@ private:
 		arr = temp;
 		phsize = size;
 	}
-
-private:
-	T** arr;
-	int phsize;
-	int lsize;
 };

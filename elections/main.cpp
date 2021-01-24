@@ -2,9 +2,9 @@
 
 int main()
 {
-	Round* r1;
+	Round* r1 = nullptr;
 	int choice = 0;
-	bool votesBegan = false;
+	bool votesBegan = false, flag = false;
 	PrintMainMenu();
 	cin >> choice;
 	
@@ -21,21 +21,40 @@ int main()
 		system("cls");
 		if (choice == 1)
 		{
-			try {
-				r1 = SetRound();
-			}
-			catch (const char* msg)
+			while (r1 == nullptr)
 			{
-				cout << msg << endl;
-				r1 = SetRound();
+				try {
+					r1 = SetRound();
+				}
+				catch (invalid_argument& msg)
+				{
+					cout << msg.what() << endl;
+				}
+				catch (...)
+				{
+					cout << "Unknown error!" << endl;
+				}
 			}
 		}
 		else
 		{
 			r1 = new Round();
-			LoadElectionsFromFile(*r1, votesBegan,1);
+			while (!flag)
+			{
+				try {
+					flag = LoadElectionsFromFile(*r1, votesBegan);
+				}
+				catch (Load_error& msg)
+				{
+					cout << msg.what() << endl;
+				}
+				catch (...)
+				{
+					cout << "Problem with the file!" << endl;
+				}
+			}
+			system("cls");
 		}
-
 		PrintInterface();
 		cin >> choice;
 		while (choice != 10)
@@ -43,8 +62,26 @@ int main()
 			system("cls");
 			if (choice >= 1 && choice <= 12)
 			{
-				if (r1 != nullptr)
-					ActivateChoice(choice, *r1, votesBegan);
+				try {
+					if (r1 != nullptr)
+						ActivateChoice(choice, *r1, votesBegan);
+				}
+				catch (Load_error& msg)
+				{
+					cout << msg.what() << endl;
+				}
+				catch (invalid_argument& msg)
+				{
+					cout << msg.what() << endl;
+				}
+				catch (logic_error& msg)
+				{
+					cout << msg.what() << endl;
+				}
+				catch (...)
+				{
+					cout << "Unknown error!" << endl;
+				}
 			}
 			else
 				cout << "Not a valid choice! please try again." << endl;

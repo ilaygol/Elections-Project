@@ -10,6 +10,7 @@ public:
 	mahoz() = default;
 	mahoz(string& _name, int _numOfRep);
 	mahoz(istream& in);
+	mahoz(const mahoz& other) = delete;
 	virtual ~mahoz();
 
 	const int getSerialNumCount() const { return serialNumCount; }
@@ -26,12 +27,13 @@ public:
 	DynamicArray<citizen>& getElectedCit() { return electedCit; }
 
 	bool setNumOfCitizen(int citizenNum) { numOfCitizen = citizenNum; }
-	bool setName(char* newName) { name = mystrdup(newName); return true; }
+	bool setName(const string newName) { name = newName; return true; }
 	bool setNumOfRep(int newNumOfRep) { numOfRep = newNumOfRep; return true; }
 	bool setVote(int miflagaIndx) { electionResults[miflagaIndx]++; return true; }
 	bool addCitizenNum() { numOfCitizen++; return true; }
 	bool addVotersNum() { numOfVoters++; return true; }
 	friend ostream& operator<<(ostream& os, const mahoz& mahozToPrint);
+	virtual void print(ostream& os) const;
 	void initElectionResults(int numOfMiflaga);
 	int getWinnerRep(int& miflagaWinnerIndx);
 	int getWinnerIndx();

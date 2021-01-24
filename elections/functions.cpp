@@ -12,7 +12,7 @@ void PrintMainMenu()
 
 Round* SetRound()
 {
-	Round* res;
+	Round* res = nullptr;
 	int _day, _month, _year, _isSimpleRound;
 	cout << "Please choose the round type: (1) for regular (2) for simple" << endl;
 	cin >> _isSimpleRound;
@@ -24,13 +24,6 @@ Round* SetRound()
 	cout << "year: ";
 	cin >> _year;
 	system("cls");
-	if (_day > 32 || _day <= 0 || _month > 12 || _month <= 0 || _year < 2020 || _year>2100 || _isSimpleRound > 2 || _isSimpleRound < 1)
-	{
-		if (_isSimpleRound > 2 || _isSimpleRound < 1)
-			throw "Round type is invalid,Please try again";
-		else
-			throw "Date is invalid,Please try again";
-	}
 	res = new Round(_day, _month, _year, _isSimpleRound - 1);
 	if (_isSimpleRound - 1)
 	{
@@ -60,7 +53,6 @@ void PrintInterface()
 
 void activateMainInterface(Round* _round,bool& electionStart)
 {
-
 	int choice = 0;
 	PrintMainMenu();
 	cin >> choice;
@@ -81,13 +73,11 @@ void activateMainInterface(Round* _round,bool& electionStart)
 		}
 		else
 		{
-			LoadElectionsFromFile(*_round, electionStart, 1);
+			LoadElectionsFromFile(*_round, electionStart);
 		}
 	}
-
-
-
 }
+
 void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 {
 	switch (_choice)
@@ -95,7 +85,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 	case 1: //add mahoz
 		if (electionStart)
 			cout << "Elections already started, CAN'T ADD MAHOZ" << endl;
-		else if(_round.getIsSimpleRound())
+		else if (_round.getIsSimpleRound())
 			cout << "These are simple elections, CAN'T ADD MAHOZ" << endl;
 		else
 			addNewmahoz(_round);
@@ -133,13 +123,17 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		int numOfMiflaga, numOfMahoz;
 		numOfMiflaga = _round.getAllMiflaga().getlenght();
 		numOfMahoz = _round.getAllMahoz().getlenght();
-		if (numOfMahoz == 0 || numOfMiflaga==0)
-			cout << "NO DETAILS ENTERED YET,CANT START votes!!" << endl;
+		if (numOfMahoz == 0 || numOfMiflaga == 0)
+			throw logic_error("NO DETAILS ENTERED YET,CANT START votes!!");
 		else
 			addNewVote(_round, electionStart);
 		break;
 
 	case 9: //elections results
+		if (!electionStart)
+			throw logic_error("Elections haven't started! nobody has voted yet");
+		if (!_round.CheckEnoughRep())
+			throw logic_error("some miflaga has not enogh representives to some mahoz");
 		CalculateResults(_round);
 		break;
 
@@ -148,7 +142,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		break;
 
 	case 12: //load round
-		LoadElectionsFromFile(_round, electionStart,2);
+		LoadElectionsFromFile(_round, electionStart);
 		break;
 	}
 }
@@ -171,24 +165,26 @@ void addNewCitizen(Round& _round)
 		mahozNum = 1;
 	mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
 	cit = _round.getAllCitizen().getObjectPtr(id);
-	if (cit == nullptr && mahozptr != nullptr) ///citizen already exist
+	if (cit == nullptr) ///citizen already exist
 	{
 		_round.AddCitizenToArray(name, id, year, mahozNum);//added the citizen the all citizens array
 
-		//adding the citizen to citizens that can vote in specific mahoz
-		mahozptr->getCanVoteCit().addptr(new citizen(name, id, year, mahozptr));
-		mahozptr->addCitizenNum();
-		cout << "Citizen been added SUCCESSFULLY" << endl;
+		//adding the citizen to citizens that can vote in specific mahoz if age above 18
+		if (_round.getYear() - year >= 18)
+		{
+			mahozptr->getCanVoteCit().addptr(new citizen(name, id, year, mahozptr));
+			mahozptr->addCitizenNum();
+			cout << "Citizen has been added SUCCESSFULLY and can vote! (above 18)" << endl;
+		}
+		else
+			cout << "Citizen has been added SUCCESSFULLY and can not vote! (under 18)" << endl;
 	}
-	else if (mahozptr != nullptr)
-		cout << "could not add the citizen,ALREADY EXIST" << endl;
 	else
-		cout << "could not add the citizen,MAHOZ DOESNT EXIST" << endl;
+		throw logic_error("could not add the citizen, ALREADY EXIST");
 }
 
 void addNewmahoz(Round& _round)
 {
-
 	int dividedChoice;
 	bool dividedFlag = false;
 	string name;
@@ -213,17 +209,13 @@ void addNewmahoz(Round& _round)
 
 	if (dividedChoice == 1 || dividedChoice == 2)
 	{
-		if (numOfRep <= 0)
-			cout << "INVALID REPRESENTIVES NUMBER!" << endl;
-		else
-		{
-			_round.AddMahozToArray(name, numOfRep,dividedFlag);
-			cout << "mahoz been added SUCCESSFULY" << endl;
-		}
+		_round.AddMahozToArray(name, numOfRep, dividedFlag);
+		cout << "mahoz been added SUCCESSFULY" << endl;
 	}
 	else
-		cout << "INVALID MAHOZ TYPE!" << endl;
+		throw invalid_argument("INVALID MAHOZ TYPE!");
 }
+
 void addNewMiflaga(Round& _round)
 {
 	string name;
@@ -241,7 +233,7 @@ void addNewMiflaga(Round& _round)
 		cout << "Miflaga been added SUCCESSFULY" << endl;
 	}
 	else
-		cout << "COULD NOT add miflaga, WRONG ID" << endl;
+		throw logic_error("COULD NOT add miflaga, There is no citizen with this exact ID");
 }
 
 void addNewRepToMiflaga(Round& _round)
@@ -260,26 +252,26 @@ void addNewRepToMiflaga(Round& _round)
 		mahozNum = 1;
 	cit = _round.getAllCitizen().getObjectPtr(id);
 	if (cit == nullptr)
-		cout << "Could not add citizen,CITIZEN DOES NOT EXIST" << endl;
+		throw invalid_argument("Could not add citizen, CITIZEN DOES NOT EXIST");
 	else
 	{
 		mif = _round.getAllMiflaga().getObjectPtr(miflagaSerial);
 		if (mif == nullptr)
-			cout << "Could not add citizen,MIFLAGA DOES NOT EXIST" << endl;
+			throw invalid_argument("Could not add citizen, MIFLAGA DOES NOT EXIST");
 		else
 		{
 			mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
 			if (mahozptr != nullptr)
 			{
 				mif->getList().addRepToMahoz(cit, mahozNum);
-				cout << "representative been added SUCCESSFULY" << endl;
+				cout << "representive been added SUCCESSFULY" << endl;
 			}
 			else
-				cout << "COULD NOT ADD representative,MAHOZ DOES NOT EXIST" << endl;
-
+				throw invalid_argument("COULD NOT ADD representive, MAHOZ DOES NOT EXIST");
 		}
 	}
 }
+
 void addNewVote(Round& _round, bool& electionStart)
 {
 	int id, miflagaSerial;
@@ -294,9 +286,9 @@ void addNewVote(Round& _round, bool& electionStart)
 	citglobal = _round.getAllCitizen().getObjectPtr(id);
 	mif = _round.getAllMiflaga().getObjectPtr(miflagaSerial);
 	if (citglobal == nullptr)
-		cout << "Citizen ID IS INVALID" << endl;
+		throw invalid_argument("Citizen ID IS INVALID");
 	else if (mif == nullptr)
-		cout << "Miflaga DOESNT EXIST" << endl;
+		throw invalid_argument("Miflaga DOESNT EXIST");
 	else
 	{
 		mahozptr = const_cast<mahoz*>(citglobal->getMahoz());
@@ -314,7 +306,7 @@ void addNewVote(Round& _round, bool& electionStart)
 			cout << "Citizen vote has been SAVED" << endl;
 		}
 		else ///citizen already voted
-			cout << "citizen ALREADY VOTED" << endl;
+			throw invalid_argument("citizen ALREADY VOTED");
 	}
 }
 
@@ -362,7 +354,7 @@ void SaveElectionsToFile(Round& _round, bool electionStart)
 	cin >> fileName;
 	ofstream outFile(fileName, ios::binary|ios::trunc);
 	if (!outFile)
-		cout << "Could not Open the FILE" << endl;
+		throw invalid_argument("Could not Open the FILE");
 	else
 	{
 		outFile.write(rcastcc(&electionStart), sizeof(electionStart));
@@ -371,22 +363,19 @@ void SaveElectionsToFile(Round& _round, bool electionStart)
 	}
 }
 
-void LoadElectionsFromFile(Round& _round, bool& electionStart,int whoCalled)
+bool LoadElectionsFromFile(Round& _round, bool& electionStart)
 {
 	string fileName;
 	cout << "Enter File Name: ";
 	cin >> fileName;
 	ifstream inFile(fileName, ios::binary);
 	if (!inFile)
-	{
-		cout << "Could not Open the FILE" << endl;
-		if (whoCalled == 1)
-			activateMainInterface(&_round,electionStart);
-	}
+		throw Load_error("Couldn't open the file!");
 	else
 	{
 		inFile.read(rcastc(&electionStart), sizeof(electionStart));
 		_round.Load(inFile);
 		cout << "Elections been Loaded SUCCESSFULY" << endl;
 	}
+	return true;
 }
