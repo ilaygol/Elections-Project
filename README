@@ -1,0 +1,3 @@
+This project has been written in c++.
+The program goal is to run and manage the United States elections system via console UI.
+In this project I've used OOP (inheritance, polymorphism, etc..), operators overloading, STL, iterators, exceptions and serialization.
