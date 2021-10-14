@@ -17,11 +17,11 @@ Round* SetRound()
 	cout << "Please choose the round type: (1) for regular (2) for simple" << endl;
 	cin >> _isSimpleRound;
 	cout << "Please enter the elections date:" << endl;
-	cout << "day: ";
+	cout << "Day: ";
 	cin >> _day;
-	cout << "month: ";
+	cout << "Month: ";
 	cin >> _month;
-	cout << "year: ";
+	cout << "Year: ";
 	cin >> _year;
 	system("cls");
 	res = new Round(_day, _month, _year, _isSimpleRound - 1);
@@ -37,13 +37,13 @@ Round* SetRound()
 void PrintInterface()
 {
 	cout << "Please enter the number of your choice:" << endl;
-	cout << "1. Add mahoz" << endl;
-	cout << "2. Add citizen" << endl;
-	cout << "3. Add miflaga" << endl;
-	cout << "4. Add citizen to miflaga" << endl;
-	cout << "5. Print all mahoz" << endl;
+	cout << "1. Add new district" << endl;
+	cout << "2. Add new citizen" << endl;
+	cout << "3. Add new party" << endl;
+	cout << "4. Add citizen as party member" << endl;
+	cout << "5. Print all districts" << endl;
 	cout << "6. Print all citizens" << endl;
-	cout << "7. Print all miflaga" << endl;
+	cout << "7. Print all parties" << endl;
 	cout << "8. Vote" << endl;
 	cout << "9. Elections results" << endl;
 	cout << "10. QUIT" << endl << endl << endl;
@@ -84,7 +84,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 	{
 	case 1: //add mahoz
 		if (_round.getIsSimpleRound())
-			throw logic_error("These are simple elections, CAN'T ADD MAHOZ");
+			throw logic_error("These are simple elections, CAN'T ADD DISTRICT");
 		else
 			addNewmahoz(_round, electionStart);
 		break;
@@ -118,7 +118,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		numOfMiflaga = _round.getAllMiflaga().getlenght();
 		numOfMahoz = _round.getAllMahoz().getlenght();
 		if (numOfMahoz == 0 || numOfMiflaga == 0)
-			throw logic_error("NO DETAILS ENTERED YET,CANT START votes!!");
+			throw logic_error("NO DETAILS ENTERED YET,CANT START VOTES!!");
 		else
 			addNewVote(_round, electionStart);
 		break;
@@ -127,7 +127,7 @@ void ActivateChoice(int _choice, Round& _round,bool& electionStart)
 		if (!electionStart)
 			throw logic_error("Elections haven't started! nobody has voted yet");
 		if (!_round.CheckEnoughRep())
-			throw logic_error("some miflaga has not enogh representives to some mahoz");
+			throw logic_error("some party has not enogh representives to some district");
 		CalculateResults(_round);
 		break;
 
@@ -153,7 +153,7 @@ void addNewCitizen(Round& _round)
 	cin >> id;
 	cout << "Year of birth: ";
 	cin >> year;
-	cout << "Mahoz number: ";
+	cout << "District number: ";
 	cin >> mahozNum;
 	if (_round.getIsSimpleRound())
 		mahozNum = 1;
@@ -191,9 +191,9 @@ void addNewmahoz(Round& _round, bool electionStart)
 	}
 	else
 	{
-		cout << "choose mahoz type (1)divided mahoz (2)Standard mahoz: ";
+		cout << "choose district type (1)divided district (2)Standard district: ";
 		cin >> dividedChoice;
-		cout << "Mahoz name: ";
+		cout << "District name: ";
 		cin >> name;
 		if (dividedChoice == 1)
 			dividedFlag = true;
@@ -210,10 +210,10 @@ void addNewmahoz(Round& _round, bool electionStart)
 			int numOfMiflaga = _round.getAllMiflaga().getlenght();
 			_round.getAllMahoz().getObjectPtr(mahozSerial)->initElectionResults(numOfMiflaga);
 		}
-		cout << "mahoz been added SUCCESSFULY" << endl;
+		cout << "district been added SUCCESSFULY" << endl;
 	}
 	else
-		throw invalid_argument("INVALID MAHOZ TYPE!");
+		throw invalid_argument("INVALID DISTRICT TYPE!");
 }
 
 void addNewMiflaga(Round& _round, bool electionStart)
@@ -222,9 +222,9 @@ void addNewMiflaga(Round& _round, bool electionStart)
 	mahoz* mahozptr;
 	citizen* cit;
 	int id;
-	cout << "Miflaga name: ";
+	cout << "Party name: ";
 	cin >> name;
-	cout << "Head of miflaga id: ";
+	cout << "Head of party id: ";
 	cin >> id;
 	cit = _round.getAllCitizen().getObjectPtr(id);
 	if (cit != nullptr) ///head of miflaga exist
@@ -239,10 +239,10 @@ void addNewMiflaga(Round& _round, bool electionStart)
 				mahozptr->addMiflagaToResultsArr();
 			}
 		}
-		cout << "Miflaga been added SUCCESSFULY" << endl;
+		cout << "Party been added SUCCESSFULY" << endl;
 	}
 	else
-		throw logic_error("COULD NOT add miflaga, There is no citizen with this exact ID");
+		throw logic_error("COULD NOT add party, There is no citizen with this exact ID");
 }
 
 void addNewRepToMiflaga(Round& _round)
@@ -253,9 +253,9 @@ void addNewRepToMiflaga(Round& _round)
 	mahoz* mahozptr;
 	cout << "representive ID: ";
 	cin >> id;
-	cout << "miflaga Serial Number: ";
+	cout << "party serial number: ";
 	cin >> miflagaSerial;
-	cout << "mahoz SerialNumber: ";
+	cout << "district serial number: ";
 	cin >> mahozNum;
 	if (_round.getIsSimpleRound())
 		mahozNum = 1;
@@ -266,7 +266,7 @@ void addNewRepToMiflaga(Round& _round)
 	{
 		mif = _round.getAllMiflaga().getObjectPtr(miflagaSerial);
 		if (mif == nullptr)
-			throw invalid_argument("Could not add citizen, MIFLAGA DOES NOT EXIST");
+			throw invalid_argument("Could not add citizen, PARTY DOES NOT EXIST");
 		else
 		{
 			mahozptr = _round.getAllMahoz().getObjectPtr(mahozNum);
@@ -276,7 +276,7 @@ void addNewRepToMiflaga(Round& _round)
 				cout << "representive been added SUCCESSFULY" << endl;
 			}
 			else
-				throw invalid_argument("COULD NOT ADD representive, MAHOZ DOES NOT EXIST");
+				throw invalid_argument("COULD NOT ADD representive, DISTRICT DOES NOT EXIST");
 		}
 	}
 }
@@ -290,14 +290,14 @@ void addNewVote(Round& _round, bool& electionStart)
 
 	cout << "citizen ID: ";
 	cin >> id;
-	cout << "miflaga Serial Number: ";
+	cout << "pary serial number: ";
 	cin >> miflagaSerial;
 	citglobal = _round.getAllCitizen().getObjectPtr(id);
 	mif = _round.getAllMiflaga().getObjectPtr(miflagaSerial);
 	if (citglobal == nullptr)
 		throw invalid_argument("Citizen ID IS INVALID");
 	else if (mif == nullptr)
-		throw invalid_argument("Miflaga DOESNT EXIST");
+		throw invalid_argument("Party DOESNT EXIST");
 	else
 	{
 		mahozptr = const_cast<mahoz*>(citglobal->getMahoz());
@@ -335,23 +335,23 @@ void CalculateResults(Round& _round)
 		cout << endl << *(mahozptr) << endl;
 		if (typeid(*mahozptr) == typeid(mahoz))
 		{
-			cout << "winner in this mahoz: " << endl << *(_round.getAllMiflaga().getObjectPtr(mahozptr->getWinnerIndx() + 1)->getHeadOfMiflaga()) << endl;
+			cout << "winner in this district: " << endl << *(_round.getAllMiflaga().getObjectPtr(mahozptr->getWinnerIndx() + 1)->getHeadOfMiflaga()) << endl;
 		}
 		else
 		{
 			dividedMahoz* dMahoz = static_cast<dividedMahoz*>(mahozptr);//casting to divided mahoz
 			_round.PrintDevidedResults(dMahoz);
 		}
-		cout << "The representives from all parties of the mahoz:" << endl;
+		cout << "The representives from all parties of the district:" << endl;
 		mahozptr->getElectedCit().printAll();
 
 		cout << "all votes: " << endl;
 		_round.PrintVotesSchedule(i);
 
 		votersPrecent = static_cast<float>(mahozptr->getNumOfVoters()) / static_cast<float>(mahozptr->getNumOfCitizen()) * 100;
-		cout << "% voters in this mahoz: " << votersPrecent << endl;
+		cout << "% voters in this district: " << votersPrecent << endl;
 	}
-	cout << endl << "Heads of miflagot by rank: " << endl;
+	cout << endl << "Heads of parties by rank: " << endl;
 	_round.PrintResults();
 	cout << endl;
 }
@@ -384,7 +384,7 @@ bool LoadElectionsFromFile(Round& _round, bool& electionStart)
 	{
 		inFile.read(rcastc(&electionStart), sizeof(electionStart));
 		_round.Load(inFile);
-		cout << "Elections been Loaded SUCCESSFULY" << endl;
+		cout << "Elections has been loaded SUCCESSFULY" << endl;
 	}
 	return true;
 }
