@@ -16,7 +16,6 @@ ostream& operator<<(ostream& os,miflaga& mif)
 	return os;
 }
 
-}
 miflaga::miflaga(string& _name, citizen* head)
 	:name(_name), serialNum(serialNumCount + 1), headOfMiflaga(head)
 {
@@ -45,7 +44,6 @@ void miflaga::Save(ostream& out) const
 	repList.Save(out);
 }
 
-}
 void miflaga::Load(istream& in, Round& _round)
 {
 	int nameLen, HeadID;
